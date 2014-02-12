@@ -14,11 +14,11 @@ do ( root = this, factory = factory ) ->
 	    "underscore"
 	    "exports"
 	  ], ( _, exports ) ->
-	    root.Backbone = factory( root, exports, _ )
+	    root.Barebones = factory( root, exports, _ )
 	    return
 
 	else if typeof exports isnt "undefined"
-	  _ = require("underscore")
+	  _ = require( "underscore" ) or require( "lodash" )
 	  factory( root, exports, _ )
 
 	else
@@ -29,7 +29,7 @@ do ( root = this, factory = factory ) ->
 
 
 
-factory = ( root, Barebones, _ )
+factory = ( root, Barebones, _ ) ->
 
 	# _.noop is defined in Lodash but undefined in Underscore.js
 	lib = if _.noop then "lodash" else "underscore"
@@ -52,7 +52,7 @@ factory = ( root, Barebones, _ )
 			options or options = {}
 			this.model = options.model if options.model
 			for model in models
-				this.models.push model
+				this.push model
 
 			this.initialize()
 
@@ -60,16 +60,18 @@ factory = ( root, Barebones, _ )
 
 		models : []
 
-		length : ->
+		length : =>
 			return this.models.length
 
 		push : ( model ) =>
-			model = this._prepareModel( model )
-			this.models.push model
+			this.models.push this._prepareModel( model )
 
 		unshift : ( model ) =>
-			model = this._prepareModel( model )
-			this.models.unshift model
+			this.models.unshift this._prepareModel( model )
+
+		concat : ( arrayOfModels ) =>
+			for model in aarayOfModels
+				this.push model
 
 		_prepareModel : ( model ) =>
 			unless model instanceof this.model
@@ -81,6 +83,7 @@ factory = ( root, Barebones, _ )
 
 
 	# These methods are in Underscore and Lodash
+	# Add them to the collection prototype as done in Backbone
 	collectionMethods = ['forEach', 'each', 'map', 'collect', 'reduce', 'foldl',
 	    'inject', 'reduceRight', 'foldr', 'find', 'detect', 'filter', 'select',
 	    'reject', 'every', 'all', 'some', 'any', 'include', 'contains', 'invoke',
@@ -88,7 +91,7 @@ factory = ( root, Barebones, _ )
 	    'tail', 'drop', 'last', 'without', 'indexOf', 'shuffle', 'lastIndexOf',
 	    'isEmpty', 'chain']
 
-	# These Underscore methods aren't added the same way in Backbone. Need to double check that they work as expected.
+	# These Underscore methods are added differently. Need to double check that they work here as expected.
 	collectionMethods.concat ['pluck', 'where', 'findWhere']
 
 	# These methods are only in Lodash
@@ -102,7 +105,7 @@ factory = ( root, Barebones, _ )
 			return _[method].apply( _, args )
 
 
-
+	# Underscore / Lodash methods that use an attribute name as an argument.
 	attributeMethods = ['groupBy', 'countBy', 'sortBy', 'indexBy']
 
 	for method in attributeMethods
@@ -111,7 +114,7 @@ factory = ( root, Barebones, _ )
 			return _[method]( this.models, iterator, context )
 
 
-
+	# Native array methods on a collection are applied to collection.models
 	nativeMethods = ['slice', 'splice', 'shift', 'pop', 'join', 'reverse', 'sort']
 
 	for method in nativeMethods
@@ -122,6 +125,9 @@ factory = ( root, Barebones, _ )
 
 
 
+	# creates methods named 'colFilter', 'colWhere', etc.
+	# they behave like analagous underscore/lodash methods
+	# EXCEPT they return a new instance of this collection's class with the results as models.
 	returnsCollectionMethods = ['filter', 'where', 'reject']
 
 	for method in returnsCollectionMethods
@@ -131,9 +137,9 @@ factory = ( root, Barebones, _ )
 			args.unshift this.models
 			return new this.constructor _[method].apply( _, args )
 
+
+
 	return {
 		Model: Model
 		Collection: Collection
 	}
-
-
