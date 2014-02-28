@@ -31,8 +31,9 @@ factory = ( root, Barebones, _ ) ->
 
       this.models = []
 
-      for model in models
-        this.push model
+      if models 
+        for model in models
+          this.push model
 
       this.initialize.apply( this, arguments )
 
@@ -47,9 +48,19 @@ factory = ( root, Barebones, _ ) ->
     unshift : ( model ) ->
       this.models.unshift this._prepareModel( model )
 
-    concat : ( arrayOfModels ) ->
-      for model in aarayOfModels
-        this.push model
+    concat : ->
+      models = [].concat [].slice.call( arguments )
+      model = this._prepareModel( model ) for model in models
+      this.models.concat models
+
+    arrayify : ->
+      results = []
+      for model in this
+        obj = new Object
+        for prop, val of model
+          obj[prop] = val
+        results.push obj
+      return results
 
     _prepareModel : ( model ) ->
       unless model instanceof this.model
@@ -68,7 +79,7 @@ factory = ( root, Barebones, _ ) ->
       'tail', 'drop', 'last', 'without', 'indexOf', 'shuffle', 'lastIndexOf',
       'isEmpty', 'chain']
 
-  # These Underscore methods are added differently. Need to double check that they work here as expected.
+  # These Underscore methods are added differently in Backbone. Need to double check that they work here as expected.
   collectionMethods = collectionMethods.concat 'pluck', 'where', 'findWhere'
 
   # These methods are only in Lodash
@@ -98,9 +109,9 @@ factory = ( root, Barebones, _ ) ->
 
   _.each nativeMethods, ( method ) ->
     Collection::[method] = ->
-      args = slice.call arguments
+      args = [].slice.call arguments
       args.unshift this.models
-      return Array.prototype[method].apply this.models, arguments
+      return [][method].apply this.models, arguments
     return
 
   # creates methods named 'colFilter', 'colWhere', etc.
@@ -115,7 +126,6 @@ factory = ( root, Barebones, _ ) ->
       args = [].slice.call( arguments )
       args.unshift this.models
       collection = _[method].apply _, args
-      console.log collection.length
       return new constructor collection
     return
 
