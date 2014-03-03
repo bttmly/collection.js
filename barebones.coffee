@@ -24,34 +24,30 @@ factory = ( root, Barebones, _ ) ->
         this[prop] = val
 
   # Barebones.Collection
-  class Collection
+  class Collection extends Array
     constructor : ( models, options ) ->
       options or options = {}
-      this.model = options.model if options.model
-
-      this.models = []
-
-      if models 
-        for model in models
-          this.push model
+      this.model = options.model or this.model
 
       this.initialize.apply( this, arguments )
 
     model : Model
 
-    length : ->
-      return this.models.length
+    initialize : ( models, options ) ->
+      if models 
+        for model in models
+          this.push model
 
     push : ( model ) ->
-      this.models.push this._prepareModel( model )
+      super this._prepareModel( model )
 
     unshift : ( model ) ->
-      this.models.unshift this._prepareModel( model )
+      super this._prepareModel( model )
 
     concat : ->
       models = [].concat [].slice.call( arguments )
       model = this._prepareModel( model ) for model in models
-      this.models.concat models
+      super models
 
     arrayify : ->
       results = []
@@ -66,9 +62,6 @@ factory = ( root, Barebones, _ ) ->
       unless model instanceof this.model
         model = new this.model( model )
       return model
-
-    initialize : ->
-
 
   # These methods are in Underscore and Lodash
   # Add them to the collection prototype as done in Backbone
@@ -89,7 +82,7 @@ factory = ( root, Barebones, _ ) ->
   _.each collectionMethods, ( method ) ->
     Collection::[method] = ->
       args = [].slice.call( arguments )
-      args.unshift this.models
+      args.unshift this
       return _[method].apply _, args
     return
 
@@ -100,7 +93,7 @@ factory = ( root, Barebones, _ ) ->
     Collection::[method] = ( value, context ) ->
       iterator = if _.isFunction( value ) then value else ( model ) ->
         model[value]
-      return _[method] this.models, iterator, context
+      return _[method] this, iterator, context
     return
 
 
@@ -110,8 +103,8 @@ factory = ( root, Barebones, _ ) ->
   _.each nativeMethods, ( method ) ->
     Collection::[method] = ->
       args = [].slice.call arguments
-      args.unshift this.models
-      return [][method].apply this.models, arguments
+      args.unshift this
+      return [][method].apply this, arguments
     return
 
   # creates methods named 'colFilter', 'colWhere', etc.
@@ -124,7 +117,7 @@ factory = ( root, Barebones, _ ) ->
     Collection::[methodName] = ->
       constructor = Object.getPrototypeOf( this ).constructor
       args = [].slice.call( arguments )
-      args.unshift this.models
+      args.unshift this
       collection = _[method].apply _, args
       return new constructor collection
     return
@@ -149,6 +142,8 @@ do ( root = this, factory = factory ) ->
   else if typeof exports isnt "undefined"
     _ = require( "lodash" ) or require( "underscore" )
     factory( root, exports, _ )
+    # shouldn't this be 
+    # exports = factory( root, exports, _ )
 
   else
     root.Barebones = factory( root, {}, root._ )

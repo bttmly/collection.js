@@ -7,8 +7,6 @@ $.getJSON "data.json", ( data ) ->
 
 hub.on "jsonComplete", ( event ) ->
 
-	console.log "rock and roll..."
-
 	data = event.jsonData
 
 	# attach to window for inspection
@@ -17,11 +15,16 @@ hub.on "jsonComplete", ( event ) ->
 
 	methods = ['forEach', 'each', 'map', 'collect', 'reduce', 'foldl', 'inject', 'reduceRight', 'foldr', 'find', 'detect', 'filter', 'select', 'reject', 'every', 'all', 'some', 'any', 'include', 'contains', 'invoke', 'max', 'min', 'toArray', 'size', 'first', 'head', 'take', 'initial', 'rest', 'tail', 'drop', 'last', 'without', 'indexOf', 'shuffle', 'lastIndexOf', 'isEmpty', 'chain']
 
+	# set this here? Maybe shouldn't be in core.
+	# Barebones::arrayify = ->
+
+
 	cloner = ->
-		result = []
-		result.push $.extend true, {}, vanillaCollection
-		result.push new Barebones.Collection( data )
-		return result
+		# result = []
+		# result.push $.extend true, {}, vanillaCollection
+		# result.push new Barebones.Collection( data )
+		# return result
+		return [ $.extend( true, {}, vanillaCollection), new Barebones.Collection( data ) ]
 
 	checkCollectionEquality = ( col1, col2 ) ->
 		result = true
@@ -44,8 +47,9 @@ hub.on "jsonComplete", ( event ) ->
 		return result
 
 
-	# forEach
 	window.tests =
+
+
 		forEach : do ->
 			[v, b] = cloner()
 			test = ( model ) ->
@@ -53,34 +57,39 @@ hub.on "jsonComplete", ( event ) ->
 			_.each v, test
 			b.each test
 			b = b.arrayify()
-			
 			return checkCollectionEquality b, v
 
 		map : do ->
 			[v, b] = cloner()
 			test = ( model ) ->
 				return model.name
+			# vmap = _.map v, test
+			# bmap = b.map test
+			# return checkArrayEquality bmap, vmap
 
-			vmap = _.map v, test
-			bmap = b.map test
-
-			return checkArrayEquality bmap, vmap
+			return checkArrayEquality( _.map( v, test ), b.map( test ) )
 
 		reduce : do ->
 			[v, b] = cloner()
 			test = ( memo, model ) ->
 				return memo + model.scrimYds
-			vreduce = _.reduce v, test, 0
-			breduce = b.reduce test, 0
-			return if vreduce is breduce then true else false
+			# vreduce = _.reduce v, test, 0
+			# breduce = b.reduce test, 0
+			# return if vreduce is breduce then true else false
+
+			return if _.reduce( v, test, 0) is b.reduce( test, 0 ) then true else false
+
+			
 
 		reduceRight : do ->
 			[v, b] = cloner()
 			test = ( memo, model ) ->
 				return memo + model.passYds
-			vreduce = _.reduceRight v, test, 0
-			breduce = b.reduceRight test, 0
-			return if vreduce is breduce then true else false
+			# vreduce = _.reduceRight v, test, 0
+			# breduce = b.reduceRight test, 0
+			# return if vreduce is breduce then true else false
+
+			return if _.reduceRight( v, test, 0 ) is b.reduceRight( test, 0 ) then true else false
 
 	fail = false
 	for test, pass of tests
