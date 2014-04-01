@@ -58,7 +58,7 @@
       return Collection;
 
     })(Array);
-    returnsCollectionMethods = ['forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select', 'where', 'pluck', 'reject', 'invoke', 'initial', 'rest', 'tail', 'drop', 'compact', 'flatten', 'without', 'shuffle', 'remove', 'transform'];
+    returnsCollectionMethods = ['forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select', 'where', 'pluck', 'reject', 'invoke', 'initial', 'rest', 'tail', 'drop', 'compact', 'flatten', 'without', 'shuffle', 'remove', 'transform', 'unique', 'uniq', 'union', 'intersection', 'difference'];
     notReturnsCollectionMethods = ['reduce', 'foldl', 'inject', 'reduceRight', 'foldr', 'find', 'detect', 'findWhere', 'every', 'all', 'some', 'any', 'contains', 'max', 'min', 'include', 'size', 'first', 'last', 'indexOf', 'lastIndexOf', 'isEmpty', 'toArray', 'at', 'findLast', 'indexBy', 'sortBy', 'countBy'];
     _.each(returnsCollectionMethods, function(method) {
       if (_[method]) {
