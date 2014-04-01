@@ -1,5 +1,5 @@
-# collection-lodash.coffee 0.1.0
-# Requires Lo-Dash
+# collection.coffee 0.1.0
+# Requires Lo-Dash (or Underscore)
 # MIT License
 
 ( ( root, factory ) ->
@@ -47,14 +47,14 @@
         groups[key] = new Collection col
       return groups
 
-  returnCollectionMethods = ['forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select', 
+  returnCollectionMethods = [ 'forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select', 
     'where', 'pluck', 'reject', 'invoke', 'initial', 'rest', 'tail', 'drop', 
-    'compact', 'flatten', 'without', 'shuffle', 'remove', 'transform', ]
+    'compact', 'flatten', 'without', 'shuffle', 'remove', 'transform' ]
 
-  notReturnCollectionMethods = ['reduce', 'foldl', 'inject', 'reduceRight', 'foldr', 
+  notReturnCollectionMethods = [ 'reduce', 'foldl', 'inject', 'reduceRight', 'foldr', 
     'find', 'detect', 'findWhere', 'every', 'all', 'some', 'any', 'contains', 'max', 
     'min', 'include', 'size', 'first', 'last', 'indexOf', 'lastIndexOf', 
-    'isEmpty', 'toArray', 'at', 'findLast', 'indexBy', 'sortBy', 'countBy']
+    'isEmpty', 'toArray', 'at', 'findLast', 'indexBy', 'sortBy', 'countBy' ]
 
   _.each returnsCollectionMethods, ( method ) ->
     if _[method]
