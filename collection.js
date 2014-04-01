@@ -16,7 +16,7 @@
       root.Collection = factory(root, {}, root._);
     }
   })(this, function(root, Collection, _) {
-    var addArg, notReturnCollectionMethods, previousCollection, returnCollectionMethods, slice;
+    var addArg, notReturnsCollectionMethods, previousCollection, returnsCollectionMethods, slice;
     previousCollection = root.Collection;
     slice = Array.prototype.slice.call.bind(Array.prototype.slice);
     addArg = function(arg, args) {
@@ -58,8 +58,8 @@
       return Collection;
 
     })(Array);
-    returnCollectionMethods = ['forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select', 'where', 'pluck', 'reject', 'invoke', 'initial', 'rest', 'tail', 'drop', 'compact', 'flatten', 'without', 'shuffle', 'remove', 'transform'];
-    notReturnCollectionMethods = ['reduce', 'foldl', 'inject', 'reduceRight', 'foldr', 'find', 'detect', 'findWhere', 'every', 'all', 'some', 'any', 'contains', 'max', 'min', 'include', 'size', 'first', 'last', 'indexOf', 'lastIndexOf', 'isEmpty', 'toArray', 'at', 'findLast', 'indexBy', 'sortBy', 'countBy'];
+    returnsCollectionMethods = ['forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select', 'where', 'pluck', 'reject', 'invoke', 'initial', 'rest', 'tail', 'drop', 'compact', 'flatten', 'without', 'shuffle', 'remove', 'transform'];
+    notReturnsCollectionMethods = ['reduce', 'foldl', 'inject', 'reduceRight', 'foldr', 'find', 'detect', 'findWhere', 'every', 'all', 'some', 'any', 'contains', 'max', 'min', 'include', 'size', 'first', 'last', 'indexOf', 'lastIndexOf', 'isEmpty', 'toArray', 'at', 'findLast', 'indexBy', 'sortBy', 'countBy'];
     _.each(returnsCollectionMethods, function(method) {
       if (_[method]) {
         Collection.prototype[method] = function() {
@@ -67,7 +67,7 @@
         };
       }
     });
-    _.each(notReturnCollectionMethods, function(method) {
+    _.each(notReturnsCollectionMethods, function(method) {
       if (_[method]) {
         Collection.prototype[method] = function() {
           return _[method].apply(_, addArg(this, arguments));

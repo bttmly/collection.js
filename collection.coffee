@@ -47,11 +47,11 @@
         groups[key] = new Collection col
       return groups
 
-  returnCollectionMethods = [ 'forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select', 
+  returnsCollectionMethods = [ 'forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select', 
     'where', 'pluck', 'reject', 'invoke', 'initial', 'rest', 'tail', 'drop', 
     'compact', 'flatten', 'without', 'shuffle', 'remove', 'transform' ]
 
-  notReturnCollectionMethods = [ 'reduce', 'foldl', 'inject', 'reduceRight', 'foldr', 
+  notReturnsCollectionMethods = [ 'reduce', 'foldl', 'inject', 'reduceRight', 'foldr', 
     'find', 'detect', 'findWhere', 'every', 'all', 'some', 'any', 'contains', 'max', 
     'min', 'include', 'size', 'first', 'last', 'indexOf', 'lastIndexOf', 
     'isEmpty', 'toArray', 'at', 'findLast', 'indexBy', 'sortBy', 'countBy' ]
@@ -62,7 +62,7 @@
         return new Collection _[method].apply _, addArg( this, arguments )
       return
 
-  _.each notReturnCollectionMethods, ( method ) ->
+  _.each notReturnsCollectionMethods, ( method ) ->
     if _[method]
       Collection::[method] = ->
         return _[method].apply _,addArg( this, arguments )
