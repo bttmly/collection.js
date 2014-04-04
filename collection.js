@@ -27,11 +27,17 @@
     Collection = (function(_super) {
       __extends(Collection, _super);
 
-      function Collection(models) {
+      function Collection(models, options) {
         var model, _i, _len;
+        options || (options = {});
         if (models) {
           for (_i = 0, _len = models.length; _i < _len; _i++) {
             model = models[_i];
+            if (options.init) {
+              model = (function(m) {
+                return options.init(m);
+              })(model);
+            }
             this.push(model);
           }
         }

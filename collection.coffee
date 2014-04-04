@@ -30,9 +30,13 @@
     return args
 
   class Collection extends Array
-    constructor : ( models ) ->
-      if models 
+    constructor : ( models, options ) ->
+      options or= {}
+      if models
         for model in models
+          if options.init
+            model = do ( m = model ) ->
+              return options.init( m )
           this.push( model )
 
     slice : ->
