@@ -61,17 +61,19 @@
     'min', 'include', 'size', 'first', 'last', 'indexOf', 'lastIndexOf', 
     'isEmpty', 'toArray', 'at', 'findLast', 'indexBy', 'sortBy', 'countBy' ]
 
-  _.each returnsCollectionMethods, ( method ) ->
-    if _[method]
-      Collection::[method] = ->
-        return new Collection _[method].apply _, addArg( this, arguments )
-      return
+  for method in returnsCollectionMethods
+    do ( method = method ) ->
+      if _[method]
+        Collection::[method] = ->
+          return new Collection _[method].apply _, addArg( this, arguments )
+        return
 
-  _.each notReturnsCollectionMethods, ( method ) ->
-    if _[method]
-      Collection::[method] = ->
-        return _[method].apply _,addArg( this, arguments )
-      return
+  for method in notReturnsCollectionMethods
+    do ( method = method ) ->
+      if _[method]
+        Collection::[method] = ->
+          return _[method].apply _,addArg( this, arguments )
+        return
 
   Collection.noConflict = ->
     root.Collection = previousCollection

@@ -16,7 +16,7 @@
       root.Collection = factory(root, {}, root._);
     }
   })(this, function(root, Collection, _) {
-    var addArg, notReturnsCollectionMethods, previousCollection, returnsCollectionMethods, slice;
+    var addArg, method, notReturnsCollectionMethods, previousCollection, returnsCollectionMethods, slice, _fn, _fn1, _i, _j, _len, _len1;
     previousCollection = root.Collection;
     slice = Array.prototype.slice.call.bind(Array.prototype.slice);
     addArg = function(arg, args) {
@@ -66,20 +66,28 @@
     })(Array);
     returnsCollectionMethods = ['forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select', 'where', 'pluck', 'reject', 'invoke', 'initial', 'rest', 'tail', 'drop', 'compact', 'flatten', 'without', 'shuffle', 'remove', 'transform', 'unique', 'uniq', 'union', 'intersection', 'difference'];
     notReturnsCollectionMethods = ['reduce', 'foldl', 'inject', 'reduceRight', 'foldr', 'find', 'detect', 'findWhere', 'every', 'all', 'some', 'any', 'contains', 'max', 'min', 'include', 'size', 'first', 'last', 'indexOf', 'lastIndexOf', 'isEmpty', 'toArray', 'at', 'findLast', 'indexBy', 'sortBy', 'countBy'];
-    _.each(returnsCollectionMethods, function(method) {
+    _fn = function(method) {
       if (_[method]) {
         Collection.prototype[method] = function() {
           return new Collection(_[method].apply(_, addArg(this, arguments)));
         };
       }
-    });
-    _.each(notReturnsCollectionMethods, function(method) {
+    };
+    for (_i = 0, _len = returnsCollectionMethods.length; _i < _len; _i++) {
+      method = returnsCollectionMethods[_i];
+      _fn(method);
+    }
+    _fn1 = function(method) {
       if (_[method]) {
         Collection.prototype[method] = function() {
           return _[method].apply(_, addArg(this, arguments));
         };
       }
-    });
+    };
+    for (_j = 0, _len1 = notReturnsCollectionMethods.length; _j < _len1; _j++) {
+      method = notReturnsCollectionMethods[_j];
+      _fn1(method);
+    }
     Collection.noConflict = function() {
       root.Collection = previousCollection;
       return this;
