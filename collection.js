@@ -6,19 +6,19 @@
   (function(root, factory) {
     var _;
     if (typeof define === "function" && define.amd) {
-      define(["lodash", "exports"], function(_, exports) {
+      return define(["lodash", "exports"], function(_, exports) {
         root.Collection = factory(root, exports, _);
       });
     } else if (typeof exports !== "undefined") {
       _ = require("lodash");
-      factory(root, exports, _);
+      return factory(root, exports, _);
     } else {
-      root.Collection = factory(root, {}, root._);
+      return root.Collection = factory(root, {}, root._);
     }
   })(this, function(root, Collection, _) {
     var addArg, method, notReturnsCollectionMethods, previousCollection, returnsCollectionMethods, slice, _fn, _fn1, _i, _j, _len, _len1;
     previousCollection = root.Collection;
-    slice = Array.prototype.slice.call.bind(Array.prototype.slice);
+    slice = [].slice.call.bind([].slice);
     addArg = function(arg, args) {
       args = slice(args);
       args.unshift(arg);
@@ -68,7 +68,7 @@
     notReturnsCollectionMethods = ['reduce', 'foldl', 'inject', 'reduceRight', 'foldr', 'find', 'detect', 'findWhere', 'every', 'all', 'some', 'any', 'contains', 'max', 'min', 'include', 'size', 'first', 'last', 'indexOf', 'lastIndexOf', 'isEmpty', 'toArray', 'at', 'findLast', 'indexBy', 'sortBy', 'countBy'];
     _fn = function(method) {
       if (_[method]) {
-        Collection.prototype[method] = function() {
+        return Collection.prototype[method] = function() {
           return new Collection(_[method].apply(_, addArg(this, arguments)));
         };
       }
@@ -79,7 +79,7 @@
     }
     _fn1 = function(method) {
       if (_[method]) {
-        Collection.prototype[method] = function() {
+        return Collection.prototype[method] = function() {
           return _[method].apply(_, addArg(this, arguments));
         };
       }

@@ -9,7 +9,7 @@
       "exports"
     ], ( _, exports ) ->
       root.Collection = factory( root, exports, _ )
-      return  
+      return
 
   else if typeof exports isnt "undefined"
     _ = require( "lodash" )
@@ -18,12 +18,12 @@
   else
     root.Collection = factory( root, {}, root._ )
 
-  return
-
 )( this, ( root, Collection, _ ) ->
   
   previousCollection = root.Collection
-  slice = Array.prototype.slice.call.bind( Array.prototype.slice )
+  
+  slice = [].slice.call.bind( [].slice )
+  
   addArg = ( arg, args ) ->
     args = slice args
     args.unshift arg
@@ -51,29 +51,27 @@
         groups[key] = new Collection col
       return groups
 
-  returnsCollectionMethods = [ 'forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select', 
-    'where', 'pluck', 'reject', 'invoke', 'initial', 'rest', 'tail', 'drop', 
-    'compact', 'flatten', 'without', 'shuffle', 'remove', 'transform', 
+  returnsCollectionMethods = [ 'forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select',
+    'where', 'pluck', 'reject', 'invoke', 'initial', 'rest', 'tail', 'drop',
+    'compact', 'flatten', 'without', 'shuffle', 'remove', 'transform',
     'unique', 'uniq', 'union', 'intersection', 'difference']
 
-  notReturnsCollectionMethods = [ 'reduce', 'foldl', 'inject', 'reduceRight', 'foldr', 
-    'find', 'detect', 'findWhere', 'every', 'all', 'some', 'any', 'contains', 'max', 
-    'min', 'include', 'size', 'first', 'last', 'indexOf', 'lastIndexOf', 
+  notReturnsCollectionMethods = [ 'reduce', 'foldl', 'inject', 'reduceRight', 'foldr',
+    'find', 'detect', 'findWhere', 'every', 'all', 'some', 'any', 'contains', 'max',
+    'min', 'include', 'size', 'first', 'last', 'indexOf', 'lastIndexOf',
     'isEmpty', 'toArray', 'at', 'findLast', 'indexBy', 'sortBy', 'countBy' ]
 
   for method in returnsCollectionMethods
-    do ( method = method ) ->
+    do ( method ) ->
       if _[method]
         Collection::[method] = ->
           return new Collection _[method].apply _, addArg( this, arguments )
-        return
 
   for method in notReturnsCollectionMethods
-    do ( method = method ) ->
+    do ( method ) ->
       if _[method]
         Collection::[method] = ->
           return _[method].apply _,addArg( this, arguments )
-        return
 
   Collection.noConflict = ->
     root.Collection = previousCollection
