@@ -22,12 +22,12 @@
   
   previousCollection = root.Collection
   
-  slice = [].slice.call.bind( [].slice )
+  slice = Function::call.bind( Array::slice )
   
   addArg = ( arg, args ) ->
     args = slice args
     args.unshift arg
-    return args
+    args
 
   class Collection extends Array
     constructor : ( models, options ) ->
@@ -36,20 +36,22 @@
         for model in models
           if options.init
             model = do ( m = model ) ->
-              return options.init( m )
-          this.push( model )
+              options.init( m )
+          @push( model )
 
-    slice : ->
-      return new Collection super( arguments )
+    # TODO: figure out best way to handle 'grouping' methods
+    # groupBy : ->
+    #   groups = _.groupBy addArg( this, arguments )
+    #   for key, col of groups
+    #     groups[key] = new Collection col
+    #   return groups
 
-    splice : ->
-      return new Collection super( arguments )
+  arrayMethods = [ "slice", "splice", "concat" ]
 
-    groupBy : ->
-      groups = _.groupBy addArg( this, arguments )
-      for key, col of groups
-        groups[key] = new Collection col
-      return groups
+  for method in arrayMethods
+    do ( method ) ->
+      Collection::method = ->
+        new Collection method.apply( @, arguments )
 
   returnsCollectionMethods = [ 'forEach', 'each', 'eachRight', 'forEachRight', 'map', 'collect', 'filter', 'select',
     'where', 'pluck', 'reject', 'invoke', 'initial', 'rest', 'tail', 'drop',
@@ -61,23 +63,21 @@
     'min', 'include', 'size', 'first', 'last', 'indexOf', 'lastIndexOf',
     'isEmpty', 'toArray', 'at', 'findLast', 'indexBy', 'sortBy', 'countBy' ]
 
-  for method in returnsCollectionMethods
-    do ( method ) ->
-      if _[method]
-        Collection::[method] = ->
-          return new Collection _[method].apply _, addArg( this, arguments )
+  lodashMethods = returnsCollectionMethods.concat notReturnsCollectionMethods
 
-  for method in notReturnsCollectionMethods
+  for method in lodashMethods
     do ( method ) ->
       if _[method]
+        retCol = method in returnsCollectionMethods
         Collection::[method] = ->
-          return _[method].apply _,addArg( this, arguments )
+          result = _[method].apply _, addArg( @, arguments )
+          if retCol then new Collection( result ) else result 
 
   Collection.noConflict = ->
     root.Collection = previousCollection
-    return this
+    @
 
-  return Collection
+  Collection
   
 )
 
