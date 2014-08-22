@@ -1,6 +1,9 @@
 Collection
 ==========
 
+# Warning: Deprecated
+This approach is not performant nor particularly elegant. Check out [super-collection(https://github.com/nickb1080/super-collection) for a much better implementation.
+
 Collection is a simple JS class with the “collection methods” from Lo-Dash/Underscore mixed into the prototype. To enable easy chaining, methods that would ordinarily return arrays return instances of Collection instead.
 
 Methods returning a Collection instance:
